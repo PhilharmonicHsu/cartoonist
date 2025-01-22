@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComicController;
 
@@ -14,11 +13,6 @@ use App\Http\Controllers\ComicController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/generate-image', [ComicController::class, 'generate']);
 
 Route::get('/user-comics', [ComicController::class, 'getUserComics']);

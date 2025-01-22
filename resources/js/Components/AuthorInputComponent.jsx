@@ -8,8 +8,6 @@ export default function AuthorInputComponent() {
     const [characterSetting, setCharacterSetting] = useState('');
     const [styleId, setStyleId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // 成功訊息
 
     const styles = [
         { id: 1, name: 'Japanese', image: '/images/japanese-style.jpg' },

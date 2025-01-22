@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\UserComic;
@@ -15,14 +14,8 @@ use App\Models\UserComic;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Library');
 });
 
 Route::get('/author-input', function () {
@@ -39,10 +32,6 @@ Route::get('/comic-showroom/{userComic:id}', function (UserComic $userComic) {
     return Inertia::render('ComicShowRoom', [
         'userComic' => $userComic
     ]);
-});
-
-Route::get('/', function () {
-   return Inertia::render('Library');
 });
 
 require __DIR__.'/auth.php';

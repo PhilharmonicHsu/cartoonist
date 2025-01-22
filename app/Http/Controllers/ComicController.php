@@ -27,21 +27,16 @@ class ComicController extends Controller
         $result = $this->openAIService->generateImage(
             $story, $characterSetting, $styleId
         );
-//
-//        $client = new Client();
-//        $response = $client->get($result['imageUrl']);
-//        $imageContent = $response->getBody()->getContents();
-//
-//        $filename = 'comics/' . uniqid() . '.jpg';
-//
-//        Storage::disk('s3')->put($filename, $imageContent);
-//
-//        $url = Storage::disk('s3')->url($filename);
 
-        sleep(5);
+        $client = new Client();
+        $response = $client->get($result['imageUrl']);
+        $imageContent = $response->getBody()->getContents();
 
-        $url = 'https://mcphils.s3.us-east-2.amazonaws.com/images/CdTUhjSKQpwQEwLeHDx70I6Ty2JUrgIxceEehGZG.jpg';
+        $filename = 'comics/' . uniqid() . '.jpg';
 
+        Storage::disk('s3')->put($filename, $imageContent);
+
+        $url = Storage::disk('s3')->url($filename);
 
         $userComic = UserComic::create([
             'story_summary' => $story,
