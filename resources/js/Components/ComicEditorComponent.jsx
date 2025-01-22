@@ -2,20 +2,23 @@ import React, {useRef, useState, useEffect} from "react";
 import Moveable from "react-moveable";
 import axios from "axios";
 import {router} from "@inertiajs/react";
+import SimpleSpin from "@/Components/SimpleSpin.jsx";
+import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
+
+const DEFAULT_DIALOG = [
+     { id: 1, x: 100, y: 100, width: 200, height: 100, text: "Hello, this is a default dialog!"},
+];
 
 export default function ComicEditorComponent({userComic}) {
     const [imageUrl, setImageUrl] = useState('');
-    // const [dialogs, setDialogs] = useState([
-    //     { id: 1, x: 100, y: 100, width: 200, height: 100, text: "Hello, this is a test dialog!"},
-    // ]);
-
     const [dialogs, setDialogs] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [selectedDialogId, setSelectedDialogId] = useState(null);
     const containerRef = useRef(null);
 
     useEffect(() => {
-        setDialogs(userComic.dialog);
+        setDialogs(userComic.dialog || DEFAULT_DIALOG);
         setImageUrl(userComic.image_url);
     }, []);
 
@@ -56,18 +59,22 @@ export default function ComicEditorComponent({userComic}) {
         setSelectedDialogId(null);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const data = {
             dialogs,
         };
 
-        axios.patch(`/api/user-comic/${userComic.id}`, data)
-            .then(response => {
-                console.log(response)
-            })
+        setIsLoading(true);
+
+        await axios.patch(`/api/user-comic/${userComic.id}`, data)
             .catch((error) => {
                 console.error("Failed to update comic data:", error);
-            });
+            })
+            .finally(() => {
+
+            })
+
+        setIsLoading(false);
 
         router.visit('/');
     };
@@ -77,26 +84,29 @@ export default function ComicEditorComponent({userComic}) {
             ref={containerRef}
             className="relative w-full max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-lg overflow-hidden"
         >
+            {isLoading && <FullScreenLoader context="Sending" />}
             {/* 背景圖片 */}
             <img
                 src={imageUrl}
                 alt="Comic Background"
-                className="w-full h-auto object-cover"
+                className="w-full max-h-screen object-cover"
             />
 
             {/* 添加對話氣泡按鈕 */}
             <button
                 onClick={handleSubmit}
                 className="absolute top-4 left-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+                disabled={isLoading}
             >
-                Submit
+                {isLoading ? <SimpleSpin /> : 'Submit' }
             </button>
 
             <button
                 onClick={clearFocus}
                 className="absolute top-4 left-28 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-700 transition"
+                disabled={isLoading}
             >
-                Clear Focus
+                {isLoading ? <SimpleSpin /> : 'Clear Focus' }
             </button>
 
             {/* 渲染對話氣泡 */}
@@ -134,7 +144,7 @@ export default function ComicEditorComponent({userComic}) {
                     <textarea
                         value={dialog.text}
                         onChange={(e) =>
-                            updateDialog(dialog.id, {text: e.target.value})
+                            updateDialog(dialog.id, () => ({text: e.target.value}))
                         }
                         className="w-full h-full border-none outline-none resize-none bg-transparent text-xl font-medium text-gray-800"
                         style={{

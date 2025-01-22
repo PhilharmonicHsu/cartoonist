@@ -61,7 +61,7 @@ export default function LibraryComponent() {
                         <div className="relative">
                             <img
                                 src={comic.image_url}
-                                alt={comic.dialog[0].text}
+                                alt={comic.dialog?.[0].text || '-'}
                                 className="w-full h-48 object-cover"
                             />
                             {/* 手繪風格邊框效果 */}
@@ -75,7 +75,7 @@ export default function LibraryComponent() {
                                style={{
                                     fontFamily: "'Bangers', cursive", // 使用漫畫字體
                                }}
-                            >{comic.dialog[0].text}</p>
+                            >{comic.dialog?.[0].text || '-'}</p>
                         </div>
                     </div>
                 ))}

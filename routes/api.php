@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DalleController;
+use App\Http\Controllers\ComicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/generate-image', [DalleController::class, 'generate']);
+Route::post('/generate-image', [ComicController::class, 'generate']);
 
-Route::get('/user-comics', [DalleController::class, 'getUserComics']);
+Route::get('/user-comics', [ComicController::class, 'getUserComics']);
 
-Route::get('/user-comic/{userComic:id}', [DalleController::class, 'getUserComic']);
+Route::get('/user-comic/{userComic:id}', [ComicController::class, 'getUserComic']);
 
-Route::patch('/user-comic/{userComic:id}', [DalleController::class, 'updateComic']);
+Route::patch('/user-comic/{userComic:id}', [ComicController::class, 'updateComic']);

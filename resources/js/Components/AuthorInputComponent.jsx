@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
+import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
+import SimpleSpin from "@/Components/SimpleSpin.jsx";
 
 export default function AuthorInputComponent() {
     const [storySummary, setStorySummary] = useState('');
     const [characterSetting, setCharacterSetting] = useState('');
     const [styleId, setStyleId] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState(''); // 成功訊息
 
@@ -23,7 +25,7 @@ export default function AuthorInputComponent() {
             return;
         }
 
-        setLoading(true);
+        setIsLoading(true);
 
         try {
             const response = await axios.post('/api/generate-image', {
@@ -46,7 +48,7 @@ export default function AuthorInputComponent() {
             alert('Failed to start image generation. Please try again later.')
             console.log(error)
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     }
 
@@ -110,11 +112,15 @@ export default function AuthorInputComponent() {
                     </div>
                 </div>
                 <div className="relative z-10 bg-white text-center">
-                    <button className="rounded-xl py-2 px-4 my-4 bg-amber-300 w-1/2 font-bold text-white"
+                    <button className="rounded-xl py-2 px-4 my-4 bg-amber-300 w-1/2 font-bold text-white justify-items-center"
                             onClick={handleSubmit}
-                    >Submit</button>
+                            disabled={isLoading}
+                    >
+                        {isLoading ? <SimpleSpin /> : 'Submit' }
+                    </button>
                 </div>
             </div>
+            {isLoading && <FullScreenLoader context="Comic is being generated" />}
         </div>
     );
 }

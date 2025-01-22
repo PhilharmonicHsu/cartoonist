@@ -18,12 +18,12 @@ export default function ComicShowRoomComponent({userComic}) {
 
     return (
         <div
-            className="relative w-full max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-lg overflow-hidden"
+            className="relative w-full max-w-4xl mx-auto mt-0 bg-gray-100 rounded-lg shadow-lg overflow-hidden"
         >
             <img
                 src={imageUrl}
                 alt="Comic Background"
-                className="w-full h-auto object-cover"
+                className="w-full max-h-screen object-cover"
             />
 
             <button

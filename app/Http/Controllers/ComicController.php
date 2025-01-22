@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class DalleController extends Controller
+class ComicController extends Controller
 {
     protected OpenAIService $openAIService;
 
@@ -24,9 +24,9 @@ class DalleController extends Controller
         $characterSetting = $request->input('characterSetting');
         $styleId = $request->input('styleId');
 
-//        $result = $this->openAIService->generateImage(
-//            $story, $charDescription, $comicStyleId
-//        );
+        $result = $this->openAIService->generateImage(
+            $story, $characterSetting, $styleId
+        );
 //
 //        $client = new Client();
 //        $response = $client->get($result['imageUrl']);
@@ -38,7 +38,10 @@ class DalleController extends Controller
 //
 //        $url = Storage::disk('s3')->url($filename);
 
-        $url = '123123';
+        sleep(5);
+
+        $url = 'https://mcphils.s3.us-east-2.amazonaws.com/images/CdTUhjSKQpwQEwLeHDx70I6Ty2JUrgIxceEehGZG.jpg';
+
 
         $userComic = UserComic::create([
             'story_summary' => $story,
@@ -52,19 +55,6 @@ class DalleController extends Controller
 
     public function getUserComic(UserComic $userComic): JsonResponse
     {
-//        $userComic->dialog = [
-//            [
-//                'id' => 1,
-//                'x' => 100,
-//                'y' => 100,
-//                'width' => 200,
-//                'height' => 100,
-//                'text' => "Hello, this is a test dialog!"
-//            ]
-//        ];
-//
-//        $userComic->save();
-
         return response()->json($userComic);
     }
 
