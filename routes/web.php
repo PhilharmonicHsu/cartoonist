@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\UserComic;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,17 +29,20 @@ Route::get('/author-input', function () {
     return Inertia::render('AuthorInput');
 });
 
-Route::get('/comic-dialog', function () {
-    return Inertia::render('ComicDialog');
+Route::get('/comic-editor/{userComic:id}', function (UserComic $userComic) {
+    return Inertia::render('ComicEditor', [
+        'userComic' => $userComic
+    ]);
 });
 
-Route::get('/comic-dialog-draggable', function () {
-    return Inertia::render('ComicDialogDraggable');
+Route::get('/comic-showroom/{userComic:id}', function (UserComic $userComic) {
+    return Inertia::render('ComicShowRoom', [
+        'userComic' => $userComic
+    ]);
 });
 
-Route::get('/comic-editor', function () {
-    return Inertia::render('ComicEditor');
+Route::get('/', function () {
+   return Inertia::render('Library');
 });
-
 
 require __DIR__.'/auth.php';

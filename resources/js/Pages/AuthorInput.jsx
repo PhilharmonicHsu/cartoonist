@@ -1,10 +1,10 @@
 import React from 'react';
-import AuthorInputScreen from '../components/AuthorInputScreen';
+import AuthorInputComponent from '../Components/AuthorInputComponent.jsx';
 
 export default function AuthorInput() {
     return (
         <div>
-            <AuthorInputScreen />
+            <AuthorInputComponent />
         </div>
     );
 }

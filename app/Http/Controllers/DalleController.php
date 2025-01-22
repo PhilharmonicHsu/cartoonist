@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\OpenAIService;
+use App\Models\UserComic;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,37 +20,65 @@ class DalleController extends Controller
 
     public function generate(Request $request): JsonResponse
     {
-        $story = $request->input('story');
-        $charDescription = $request->input('charDescription');
-        $comicStyleId = $request->input('comicStyleId');
-        [$isSuccessful, $imageUrl] = $this->openAIService->generateImage($story, $charDescription, $comicStyleId);
+        $story = $request->input('storySummary');
+        $characterSetting = $request->input('characterSetting');
+        $styleId = $request->input('styleId');
 
-        $client = new Client();
-        $response = $client->get($imageUrl);
-        $imageContent = $response->getBody()->getContents();
+//        $result = $this->openAIService->generateImage(
+//            $story, $charDescription, $comicStyleId
+//        );
+//
+//        $client = new Client();
+//        $response = $client->get($result['imageUrl']);
+//        $imageContent = $response->getBody()->getContents();
+//
+//        $filename = 'comics/' . uniqid() . '.jpg';
+//
+//        Storage::disk('s3')->put($filename, $imageContent);
+//
+//        $url = Storage::disk('s3')->url($filename);
 
-        $filename = 'comics/' . uniqid() . '.jpg';
+        $url = '123123';
 
-        Storage::disk('s3')->put($filename, $imageContent);
+        $userComic = UserComic::create([
+            'story_summary' => $story,
+            'character_setting' => $characterSetting,
+            'style' => $styleId,
+            'image_url' => $url,
+        ]);
 
-        $url = Storage::disk('s3')->url($filename);
-
-        return response()->json($response);
+        return response()->json($userComic);
     }
 
-    function testDownImage()
+    public function getUserComic(UserComic $userComic): JsonResponse
     {
-        $client = new Client();
-        $response = $client->get('https://mcphils.s3.us-east-2.amazonaws.com/images/CdTUhjSKQpwQEwLeHDx70I6Ty2JUrgIxceEehGZG.jpg');
-        $imageContent = $response->getBody()->getContents();
+//        $userComic->dialog = [
+//            [
+//                'id' => 1,
+//                'x' => 100,
+//                'y' => 100,
+//                'width' => 200,
+//                'height' => 100,
+//                'text' => "Hello, this is a test dialog!"
+//            ]
+//        ];
+//
+//        $userComic->save();
 
-        $filename = 'images/' . uniqid('image_') . '.jpg';
+        return response()->json($userComic);
+    }
 
-        Storage::disk('s3')->put($filename, $imageContent);
+    public function updateComic(Request $request, UserComic $userComic): void
+    {
+        $dialog = $request->input('dialogs');
 
-        $url = Storage::disk('s3')->url($filename);
+        $userComic->dialog = $dialog;
+        $userComic->save();
+    }
 
-        dd($url);
+    public function getUserComics(): JsonResponse
+    {
+        return response()->json(UserComic::all());
     }
 }
 

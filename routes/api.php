@@ -20,4 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/generate-image', [DalleController::class, 'generate']);
-Route::get('/test-down-image', [DalleController::class, 'testDownImage']);
+
+Route::get('/user-comics', [DalleController::class, 'getUserComics']);
+
+Route::get('/user-comic/{userComic:id}', [DalleController::class, 'getUserComic']);
+
+Route::patch('/user-comic/{userComic:id}', [DalleController::class, 'updateComic']);

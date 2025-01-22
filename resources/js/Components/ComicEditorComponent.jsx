@@ -1,24 +1,23 @@
 import React, {useRef, useState, useEffect} from "react";
 import Moveable from "react-moveable";
+import axios from "axios";
+import {router} from "@inertiajs/react";
 
-export default function ComicEditorScreen({ imageUrl }) {
-    const [dialogs, setDialogs] = useState([
-        { id: 1, x: 100, y: 100, width: 200, height: 100, text: "Hello, this is a test dialog!"},
-    ]);
+export default function ComicEditorComponent({userComic}) {
+    const [imageUrl, setImageUrl] = useState('');
+    // const [dialogs, setDialogs] = useState([
+    //     { id: 1, x: 100, y: 100, width: 200, height: 100, text: "Hello, this is a test dialog!"},
+    // ]);
+
+    const [dialogs, setDialogs] = useState([]);
+
     const [selectedDialogId, setSelectedDialogId] = useState(null);
     const containerRef = useRef(null);
 
-    const addDialog = () => {
-        const newDialog = {
-            id: Date.now(),
-            x: 100,
-            y: 100,
-            width: 200,
-            height: 100,
-            text: "New dialog",
-        };
-        setDialogs((prevDialogs) => [...prevDialogs, newDialog]);
-    };
+    useEffect(() => {
+        setDialogs(userComic.dialog);
+        setImageUrl(userComic.image_url);
+    }, []);
 
     const updateDialog = (id, updater) => {
         setDialogs((prevDialogs) =>
@@ -59,10 +58,18 @@ export default function ComicEditorScreen({ imageUrl }) {
 
     const handleSubmit = () => {
         const data = {
-            imageUrl,
             dialogs,
         };
-        // onSubmit(data);
+
+        axios.patch(`/api/user-comic/${userComic.id}`, data)
+            .then(response => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.error("Failed to update comic data:", error);
+            });
+
+        router.visit('/');
     };
 
     return (

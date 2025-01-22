@@ -1,16 +1,54 @@
 import React, { useState } from 'react';
+import { router } from '@inertiajs/react'
 
-export default function AuthorInputScreen() {
+export default function AuthorInputComponent() {
     const [storySummary, setStorySummary] = useState('');
     const [characterSetting, setCharacterSetting] = useState('');
-    const [selectedStyle, setSelectedStyle] = useState('');
+    const [styleId, setStyleId] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); // 成功訊息
 
     const styles = [
-        { id: 'japanese', name: 'Japanese', image: '/images/japanese-style.jpg' },
-        { id: 'western', name: 'Western', image: '/images/western-style.jpg' },
-        { id: 'fantasy', name: 'Fantasy', image: '/images/fantasy-style.jpg' },
-        { id: 'doomsday', name: 'Doomsday', image: '/images/doomsday-style.jpg' },
+        { id: 1, name: 'Japanese', image: '/images/japanese-style.jpg' },
+        { id: 2, name: 'Western', image: '/images/western-style.jpg' },
+        { id: 3, name: 'Fantasy', image: '/images/fantasy-style.jpg' },
+        { id: 4, name: 'Doomsday', image: '/images/doomsday-style.jpg' },
     ];
+
+    const handleSubmit = async () => {
+        if (!storySummary || !characterSetting || !styleId) {
+            alert('Please fill in all fields and select a style.')
+
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await axios.post('/api/generate-image', {
+                storySummary,
+                characterSetting,
+                styleId,
+            })
+
+            if (response.status === 200) {
+                console.log(response.data)
+
+                router.visit(`/comic-editor/${response.data.id}`)
+
+                return;
+            }
+
+            alert('Failed to start image generation. Please try again later.')
+            console.log(response)
+        } catch (error) {
+            alert('Failed to start image generation. Please try again later.')
+            console.log(error)
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center relative">
@@ -59,9 +97,9 @@ export default function AuthorInputScreen() {
                                 <button
                                     key={style.id}
                                     className={`p-4 border rounded-lg shadow-sm hover:shadow-md focus:outline-none ${
-                                        selectedStyle === style.id ? 'ring-2 ring-blue-500' : ''
+                                        styleId === style.id ? 'ring-2 ring-blue-500' : ''
                                     }`}
-                                    onClick={() => setSelectedStyle(style.id)}
+                                    onClick={() => setStyleId(style.id)}
                                 >
                                     <img src={style.image} alt={style.name}
                                          className="rounded-md w-full lg:h-24 h-48 object-cover"/>
@@ -72,11 +110,11 @@ export default function AuthorInputScreen() {
                     </div>
                 </div>
                 <div className="relative z-10 bg-white text-center">
-                    <button className="rounded-xl py-2 px-4 my-4 bg-amber-300 w-1/2 font-bold text-white">Submit</button>
+                    <button className="rounded-xl py-2 px-4 my-4 bg-amber-300 w-1/2 font-bold text-white"
+                            onClick={handleSubmit}
+                    >Submit</button>
                 </div>
             </div>
-
-
         </div>
     );
 }
