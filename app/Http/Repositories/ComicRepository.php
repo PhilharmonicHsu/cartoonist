@@ -17,14 +17,16 @@ class ComicRepository
         ]);
     }
 
-    public function updateComic(UserComic $userComic, array $updateData): void
+    public function updateComic(UserComic $userComic, array $updateData): UserComic
     {
         $userComic->dialogs = $updateData['dialogs'];
         $userComic->save();
+
+        return $userComic;
     }
 
     public function getUserComics(): Collection
     {
-        return UserComic::orderByDesc('created_at')->get();
+        return UserComic::orderByDesc('id')->get();
     }
 }

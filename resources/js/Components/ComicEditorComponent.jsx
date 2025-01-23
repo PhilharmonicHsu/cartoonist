@@ -1,9 +1,9 @@
 import React, {useRef, useState, useEffect} from "react";
 import Moveable from "react-moveable";
-import axios from "axios";
 import {router} from "@inertiajs/react";
 import SimpleSpin from "@/Components/SimpleSpin.jsx";
 import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
+import { updateUserComic } from "@/api/comicApi.js";
 
 const DEFAULT_DIALOG = [
      { id: 1, x: 100, y: 100, width: 300, height: 150, text: "Hello, this is a default dialog!"},
@@ -88,13 +88,13 @@ export default function ComicEditorComponent({userComic}) {
 
         setIsLoading(true);
 
-        await axios.patch(`/api/user-comic/${userComic.id}`, data)
-            .catch((error) => {
-                console.error("Failed to update comic data:", error);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            })
+        try {
+            await updateUserComic(userComic.id, data);
+        } catch (error) {
+            console.error("Failed to update comic data:", error);
+        } finally {
+            setIsLoading(false);
+        }
 
         router.visit('/');
     };

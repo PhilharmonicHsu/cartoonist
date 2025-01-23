@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
 import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
 import SimpleSpin from "@/Components/SimpleSpin.jsx";
+import { generateComicImage } from "@/api/comicApi.js";
 
 export default function AuthorInputComponent() {
     const [storySummary, setStorySummary] = useState('');
@@ -26,15 +27,13 @@ export default function AuthorInputComponent() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('/api/generate-image', {
+            const response = await generateComicImage({
                 storySummary,
                 characterSetting,
                 styleId,
             })
 
             if (response.status === 200) {
-                console.log(response.data)
-
                 router.visit(`/comic-editor/${response.data.id}`)
 
                 return;

@@ -16,8 +16,6 @@ export default function ComicShowRoomComponent({userComic}) {
             const width = window.innerWidth;
             const scaleFactor = width / 1440; // 假設原始設計寬度是 1920px
 
-            console.log(scaleFactor)
-
             setAdjustedDialogs(
                 dialogs.map((dialog) => ({
                     ...dialog,

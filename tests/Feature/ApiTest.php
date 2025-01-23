@@ -32,7 +32,10 @@ test("test generate image is successfully", function() {
     $this->mock(ComicService::class, function ($mock) use ($fakerUserComic) {
         $mock->shouldReceive('sendResultToAWS')
             ->once()
-            ->andReturn('https://s3.amazonaws.com/bucket/comics/unique-id.jpg');
+            ->andReturn([
+                'isSuccess' => true,
+                'url' => 'https://s3.amazonaws.com/bucket/comics/unique-id.jpg'
+            ]);
 
         $mock->shouldReceive('createComic')
             ->once()
@@ -58,4 +61,49 @@ test("test generate image is successfully", function() {
                 ]
             ]
         ]);
+});
+
+test('fetch user comics that order by id desc', function () {
+    $firstComic = UserComic::factory()->create();
+    $secondComic = UserComic::factory()->create();
+    $thirdComic = UserComic::factory()->create();
+
+    $response = $this->getJson('/api/user-comics');
+    $responseData = $response->json();
+
+    expect($responseData[0]['story_summary'])->toBe($thirdComic->story_summary)
+        ->and($responseData[1]['story_summary'])->toBe($secondComic->story_summary)
+        ->and($responseData[2]['story_summary'])->toBe($firstComic->story_summary);
+});
+
+test('fetch user comic by id successfully', function () {
+    $comic = UserComic::factory()->create();
+    $response = $this->getJson("api/user-comic/{$comic->id}");
+    $responseData = $response->json();
+
+    expect($responseData['id'])->toBe($comic->id)
+        ->and($responseData['story_summary'])->toBe($comic->story_summary)
+        ->and($responseData['character_setting'])->toBe($comic->character_setting)
+        ->and($responseData['style'])->toBe($comic->style);
+});
+
+test('update user comic successfully', function () {
+   $comic = UserComic::factory()->create();
+   $payload = [
+       'dialogs' => [
+           [
+               'id' => 1,
+               'x' => 100,
+               'y' => 99,
+               'width' => 570,
+               'height' => 119,
+               'text' => "this is updated text"
+           ]
+       ]
+   ];
+
+    $response = $this->patchJson("api/user-comic/{$comic->id}", $payload);
+    $responseData = $response->json();
+
+   expect($responseData['dialogs'][0])->toMatchArray($payload['dialogs'][0]);
 });

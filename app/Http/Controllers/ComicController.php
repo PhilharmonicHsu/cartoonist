@@ -8,6 +8,7 @@ use App\Http\Services\ComicService;
 use App\Http\Services\OpenAIService;
 use App\Models\UserComic;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class ComicController extends Controller
 {
@@ -22,9 +23,15 @@ class ComicController extends Controller
 
         $result = $this->openAIService->generateImage($data);
 
-        $url = $this->comicService->sendResultToAWS($result);
+        $resultArray = $this->comicService->sendResultToAWS($result);
 
-        $data['imageUrl'] = $url;
+        if (! $resultArray['isSuccess']) {
+            return response()->json([
+                'message' => 'Please try again later',
+            ], 500);
+        }
+
+        $data['imageUrl'] = $resultArray['url'];
 
         return response()->json($this->comicService->createComic($data));
     }
@@ -34,9 +41,11 @@ class ComicController extends Controller
         return response()->json($userComic);
     }
 
-    public function updateComic(UpdateComicRequest $request, UserComic $userComic): void
+    public function updateComic(UpdateComicRequest $request, UserComic $userComic): JsonResponse
     {
-        $this->comicService->updateComic($userComic, $request->validated());
+        return response()->json(
+            $this->comicService->updateComic($userComic, $request->validated())
+        );
     }
 
     public function getUserComics(): JsonResponse

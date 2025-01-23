@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {getStyleById} from "@/utils/common.js";
 import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
+import { fetchUserComics } from "@/api/comicApi.js";
 
 export default function LibraryComponent() {
     const [comics, setComics] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // 模擬從 API 獲取漫畫列表
-        axios.get("/api/user-comics")
-            .then((response) => {
-                setComics(response.data); // 假設 API 返回漫畫列表
-            })
-            .catch((error) => {
+        const fetchData = async () => {
+            try {
+                const response = await fetchUserComics();
+                setComics(response.data) // 假設 API 返回漫畫列表
+            } catch(error) {
                 console.error("Failed to fetch comics:", error);
-            })
-            .finally(() => {
+            } finally {
                 setLoading(false);
-            });
+            }
+        }
+
+        fetchData();
     }, []);
 
     if (loading) {
@@ -57,7 +58,7 @@ export default function LibraryComponent() {
                         <div className="relative">
                             <img
                                 src={comic.image_url}
-                                alt={comic.dialog?.[0].text || '-'}
+                                alt={comic.dialogs?.[0].text || '-'}
                                 className="w-full h-48 object-cover"
                             />
                             {/* 手繪風格邊框效果 */}
@@ -67,7 +68,7 @@ export default function LibraryComponent() {
                         {/* 卡片內容 */}
                         <div className="p-4">
                             <h2 className="text-xl font-semibold text-gray-800">{getStyleById(comic.style)}</h2>
-                            <p className="font-bangers text-gray-600">{comic.dialog?.[0].text || '-'}</p>
+                            <p className="font-bangers text-gray-600">{comic.dialogs?.[0].text || '-'}</p>
                         </div>
                     </div>
                 ))}

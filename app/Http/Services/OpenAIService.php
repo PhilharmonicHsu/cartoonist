@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Enums\ComicStyle;
+use Illuminate\Support\Facades\Log;
 use OpenAI;
 use Exception;
 
@@ -20,7 +21,7 @@ class OpenAIService
             $response = OpenAI::client(env('OPENAI_API_KEY'))
                 ->images()
                 ->create([
-                    'model' => "dall-e-3",
+                    'model' => 'dall-e-3',
                     'prompt' => $prompt,
                     'n'      => 1,
                     'size'   => '1024x1024',
@@ -33,6 +34,12 @@ class OpenAIService
                 'imageUrl' => $data['url']
             ];
         } catch (Exception $exception) {
+            Log::channel('custom')->error(
+                $exception->getMessage(), [
+                    'trace' => $exception->getTraceAsString()
+                ]
+            );
+
             return [
                 'isSuccessful' => false,
                 'imageUrl' => ''

@@ -52,6 +52,12 @@ return [
     */
 
     'channels' => [
+        'custom' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/custom.log'),
+            'level' => 'error',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

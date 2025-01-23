@@ -4,6 +4,7 @@ namespace Tests\Service;
 
 use App\Http\Repositories\ComicRepository;
 use App\Http\Services\ComicService;
+use App\Models\UserComic;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
@@ -35,5 +36,6 @@ test('sendResultToAWS uploads image to S3 and returns URL', function () {
     $service = new ComicService(new ComicRepository(), $mockClient);
     $response = $service->sendResultToAWS($result);
 
-    expect($response)->toBe($mockS3Url);
+    expect($response['isSuccess'])->toBeTrue()
+        ->and($response['url'])->toBe($mockS3Url);
 });
