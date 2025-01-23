@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $story_summary
  * @property string|null $character_setting
  * @property int $style
  * @property string $image_url
- * @property array|null $dialog
+ * @property array|null $dialogs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|UserComic newModelQuery()
@@ -41,7 +41,7 @@ class UserComic extends Model
         'character_setting',
         'style',
         'image_url',
-        'dialog'
+        'dialogs'
     ];
 
     protected $casts = [
@@ -50,6 +50,6 @@ class UserComic extends Model
         'character_setting' => 'string',
         'style' => 'integer',
         'image_url' => 'string',
-        'dialog' => 'array'
+        'dialogs' => 'array'
     ];
 }

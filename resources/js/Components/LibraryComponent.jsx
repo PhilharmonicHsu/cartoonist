@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {getStyleById} from "@/utils/common.js";
+import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
 
 export default function LibraryComponent() {
     const [comics, setComics] = useState([]);
@@ -21,18 +22,13 @@ export default function LibraryComponent() {
     }, []);
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        return <FullScreenLoader />;
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center pt-8 bg-amber-100">
-            {/* 頁面標題 */}
-            {/* 動態標題 */}
+        <div className="min-h-screen flex flex-col items-center pt-8 pb-8 bg-amber-100">
             <h1
-                className="relative my-10 inline-block text-4xl font-bold text-gray-800 bg-gradient-to-r from-yellow-500 via-red-400 to-pink-500 bg-clip-text tracking-widest hover:scale-105 hover:text-red-500 transition-all duration-500"
-                style={{
-                    fontFamily: "'Bangers', cursive", // 使用漫畫字體
-                }}
+                className="relative font-bangers my-10 inline-block text-5xl lg:text-8xl font-bold text-gray-800 bg-gradient-to-r from-yellow-500 via-red-400 to-pink-500 bg-clip-text tracking-widest hover:scale-105 hover:text-red-500 transition-all duration-500"
             >
                 <span className="inline-block animate-bounce delay-100">C</span>
                 <span className="inline-block animate-bounce delay-200">o</span>
@@ -71,31 +67,15 @@ export default function LibraryComponent() {
                         {/* 卡片內容 */}
                         <div className="p-4">
                             <h2 className="text-xl font-semibold text-gray-800">{getStyleById(comic.style)}</h2>
-                            <p className="text-gray-600"
-                               style={{
-                                    fontFamily: "'Bangers', cursive", // 使用漫畫字體
-                               }}
-                            >{comic.dialog?.[0].text || '-'}</p>
+                            <p className="font-bangers text-gray-600">{comic.dialog?.[0].text || '-'}</p>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Footer */}
-            <footer className="w-full bg-gray-800 text-white py-4 mt-8 mb-20">
-                <div className="max-w-6xl mx-auto text-center">
-                    <p>&copy; 2025 Cartoonist. All rights reserved.</p>
-                    <p>Powered by Your Creative Team</p>
-                </div>
-            </footer>
-
-            {/* 新增漫畫按鈕 */}
             <button
                 onClick={() => window.location.href = '/author-input'}
-                className="fixed bottom-0 left-0 w-full bg-gradient-to-b from-amber-100 to-amber-700 h-20 text-white text-3xl font-bold py-4 flex items-center justify-center focus:outline-none hover:scale-105 hover:shadow-lg z-50 hover:scale-105 hover:text-red-500 transition-all duration-500"
-                style={{
-                    fontFamily: "'Bangers', cursive", // 使用漫畫字體
-                }}
+                className="font-bangers fixed bottom-0 left-0 w-full bg-gradient-to-b from-amber-100 to-amber-700 h-20 text-white text-3xl lg:text-5xl font-bold py-4 flex items-center justify-center focus:outline-none hover:scale-105 hover:shadow-lg z-50 hover:scale-105 hover:text-red-500 transition-all duration-500"
             >
                 <span className="relative">
                     <span className="inline-block animate-bounce delay-100">C</span>

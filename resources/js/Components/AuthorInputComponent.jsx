@@ -52,13 +52,13 @@ export default function AuthorInputComponent() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center relative">
-            {/* 背景模擬書桌 */}
             <div className="absolute inset-0 bg-cover bg-center"
-                 style={{backgroundImage: 'url(/images/desk-background.jpg)'}}/>
+                 style={{backgroundImage: 'url(/images/desk-background.jpg)'}}
+            />
 
-            {/* 主容器 */}
             <div
-                className="relative z-10 bg-white shadow-xl rounded-xl flex flex-col space-y-6 lg:space-y-0 lg:space-x-8 w-4/5 max-w-7xl">
+                className="relative z-10 bg-white shadow-xl rounded-xl flex flex-col space-y-6 lg:space-y-0 lg:space-x-8 w-4/5 max-w-7xl overflow-hidden"
+            >
                 <div
                     className="relative w-full z-10 px-8 pt-8 pb-2 flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8 max-w-7xl"
                 >
@@ -96,9 +96,9 @@ export default function AuthorInputComponent() {
                             {styles.map((style) => (
                                 <button
                                     key={style.id}
-                                    className={`p-4 border rounded-lg shadow-sm hover:shadow-md focus:outline-none ${
-                                        styleId === style.id ? 'ring-2 ring-blue-500' : ''
-                                    }`}
+                                    className={`p-4 border rounded-lg shadow-sm hover:shadow-md focus:outline-none
+                                        ${styleId === style.id ? 'ring-2 ring-blue-500' : ''}`
+                                    }
                                     onClick={() => setStyleId(style.id)}
                                 >
                                     <img src={style.image} alt={style.name}

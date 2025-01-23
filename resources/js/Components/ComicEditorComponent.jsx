@@ -6,21 +6,43 @@ import SimpleSpin from "@/Components/SimpleSpin.jsx";
 import FullScreenLoader from "@/Components/FullScreenLoader.jsx";
 
 const DEFAULT_DIALOG = [
-     { id: 1, x: 100, y: 100, width: 200, height: 100, text: "Hello, this is a default dialog!"},
+     { id: 1, x: 100, y: 100, width: 300, height: 150, text: "Hello, this is a default dialog!"},
 ];
 
 export default function ComicEditorComponent({userComic}) {
     const [imageUrl, setImageUrl] = useState('');
     const [dialogs, setDialogs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [adjustedDialogs, setAdjustedDialogs] = useState(dialogs);
 
     const [selectedDialogId, setSelectedDialogId] = useState(null);
     const containerRef = useRef(null);
 
     useEffect(() => {
-        setDialogs(userComic.dialog || DEFAULT_DIALOG);
+        setDialogs(userComic.dialogs || DEFAULT_DIALOG);
         setImageUrl(userComic.image_url);
     }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            const scaleFactor = width / 1440; // 假設原始設計寬度是 1920px
+
+            console.log(scaleFactor)
+
+            setAdjustedDialogs(
+                dialogs.map((dialog) => ({
+                    ...dialog,
+                    scale: scaleFactor.toFixed(2).toString(),
+                }))
+            );
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // 初始化調整
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [dialogs]);
 
     const updateDialog = (id, updater) => {
         setDialogs((prevDialogs) =>
@@ -71,10 +93,8 @@ export default function ComicEditorComponent({userComic}) {
                 console.error("Failed to update comic data:", error);
             })
             .finally(() => {
-
+                setIsLoading(false);
             })
-
-        setIsLoading(false);
 
         router.visit('/');
     };
@@ -85,14 +105,12 @@ export default function ComicEditorComponent({userComic}) {
             className="relative w-full max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-lg overflow-hidden"
         >
             {isLoading && <FullScreenLoader context="Sending" />}
-            {/* 背景圖片 */}
             <img
                 src={imageUrl}
                 alt="Comic Background"
                 className="w-full max-h-screen object-cover"
             />
 
-            {/* 添加對話氣泡按鈕 */}
             <button
                 onClick={handleSubmit}
                 className="absolute top-4 left-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
@@ -109,47 +127,33 @@ export default function ComicEditorComponent({userComic}) {
                 {isLoading ? <SimpleSpin /> : 'Clear Focus' }
             </button>
 
-            {/* 渲染對話氣泡 */}
-            {dialogs.map((dialog) => (
+            {adjustedDialogs.map((dialog) => (
                 <div
                     key={dialog.id}
                     id={`dialog-${dialog.id}`}
+                    className="absolute bg-white p-2 rounded-2xl cursor-move shadow-md border-4 border-solid"
                     style={{
-                        position: "absolute",
                         top: dialog.y,
                         left: dialog.x,
                         width: `${dialog.width}px`,
                         height: `${dialog.height}px`,
-                        background: "white",
-                        border: dialog.id === selectedDialogId ? "2px solid blue" : "2px solid black",
-                        borderRadius: "15px",
-                        padding: "10px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                        cursor: "move",
+                        borderColor: dialog.id === selectedDialogId ? "blue" : "black",
+                        transform: `scale(${dialog.scale || 1})`, // 應用縮放
+                        transformOrigin: "top left", // 設置縮放原點
                     }}
-                    onClick={(e) => setSelectedDialogId(dialog.id)}
+                    onClick={() => setSelectedDialogId(dialog.id)}
                 >
                     {/* 調整大小手柄 */}
                     <div
-                        style={{
-                            position: "absolute",
-                            bottom: "-10px",
-                            right: "-10px",
-                            width: "40px",
-                            height: "40px",
-                            backgroundColor: "rgba(0, 0, 0, 0.1)",
-                            cursor: "se-resize",
-                        }}
+                        className="absolute bottom-[-10px] right-[-10px] w-[40px] h-[40px] bg-black/10 cursor-se-resize"
+
                     />
                     <textarea
                         value={dialog.text}
                         onChange={(e) =>
                             updateDialog(dialog.id, () => ({text: e.target.value}))
                         }
-                        className="w-full h-full border-none outline-none resize-none bg-transparent text-xl font-medium text-gray-800"
-                        style={{
-                            fontFamily: "'Bangers', cursive", // 使用漫畫字體
-                        }}
+                        className="font-bangers w-full h-full border-none outline-none resize-none bg-transparent text-4xl font-medium text-gray-800"
                     />
                 </div>
             ))}

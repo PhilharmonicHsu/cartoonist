@@ -4,13 +4,33 @@ import {router} from "@inertiajs/react";
 export default function ComicShowRoomComponent({userComic}) {
     const [imageUrl, setImageUrl] = useState('');
     const [dialogs, setDialogs] = useState([]);
-    const urlParams = new URLSearchParams(window.location.search);
-    const comicId = urlParams.get('comicId');
+    const [adjustedDialogs, setAdjustedDialogs] = useState(dialogs);
 
     useEffect(() => {
-        setDialogs(userComic.dialog);
+        setDialogs(userComic.dialogs);
         setImageUrl(userComic.image_url);
     }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            const scaleFactor = width / 1440; // 假設原始設計寬度是 1920px
+
+            console.log(scaleFactor)
+
+            setAdjustedDialogs(
+                dialogs.map((dialog) => ({
+                    ...dialog,
+                    scale: scaleFactor.toFixed(2).toString(),
+                }))
+            );
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // 初始化調整
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [dialogs]);
 
     const handleBack = () => {
         router.visit('/')
@@ -34,30 +54,23 @@ export default function ComicShowRoomComponent({userComic}) {
             </button>
 
             {/* 渲染對話氣泡 */}
-            {dialogs.map((dialog) => (
+            {adjustedDialogs.map((dialog) => (
                 <div
                     key={dialog.id}
                     id={`dialog-${dialog.id}`}
+                    className="absolute bg-white p-2 rounded-2xl cursor-move shadow-md border-4 border-solid border-black"
                     style={{
-                        position: "absolute",
                         top: dialog.y,
                         left: dialog.x,
                         width: `${dialog.width}px`,
                         height: `${dialog.height}px`,
-                        background: "white",
-                        border: "2px solid black",
-                        borderRadius: "15px",
-                        padding: "10px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                        cursor: "move",
+                        transform: `scale(${dialog.scale || 1})`, // 應用縮放
+                        transformOrigin: "top left", // 設置縮放原點
                     }}
                 >
                     <textarea
                         value={dialog.text}
-                        className="w-full h-full border-none outline-none resize-none bg-transparent text-xl font-medium text-gray-800"
-                        style={{
-                            fontFamily: "'Bangers', cursive",
-                        }}
+                        className="font-bangers w-full h-full border-none outline-none resize-none bg-transparent text-4xl font-medium text-gray-800"
                         disabled={true}
                     />
                 </div>

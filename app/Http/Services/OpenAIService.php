@@ -8,14 +8,13 @@ use Exception;
 
 class OpenAIService
 {
-    public function generateImage(string $story, string $charDescription, int $comicStyleId): array
+    public function generateImage(array $data): array
     {
-//        $story = 'a post-apocalyptic city with destroyed buildings and scattered debris';
-//        $character = 'a brave hero wearing a shining armor';
-//
-//        $prompt = $this->generatePrompt($story, $character, '日系漫畫風');
-
-        $prompt = $this->generatePrompt($story, $charDescription, $comicStyleId);
+        $prompt = $this->generatePrompt(
+            $data['storySummary'],
+            $data['characterSetting'],
+            $data['styleId']
+        );
 
         try {
             $response = OpenAI::client(env('OPENAI_API_KEY'))
@@ -34,8 +33,6 @@ class OpenAIService
                 'imageUrl' => $data['url']
             ];
         } catch (Exception $exception) {
-            dd($exception->getMessage());
-
             return [
                 'isSuccessful' => false,
                 'imageUrl' => ''

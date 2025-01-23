@@ -18,4 +18,14 @@ enum ComicStyle: int
             default => 'comic-style scene',
         };
     }
+
+    public static function getStyleIds(): array
+    {
+        return [
+            self::JAPANESE->value,
+            self::WESTERN->value,
+            self::FANTASY->value,
+            self::DOOMSDAY->value
+        ];
+    }
 }

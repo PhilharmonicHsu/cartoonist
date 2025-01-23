@@ -13,7 +13,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                bangers: ["'Bangers'", "cursive"], // 自定義字體名稱和備用字體
             },
         },
     },
