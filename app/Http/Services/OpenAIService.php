@@ -44,7 +44,7 @@ class OpenAIService
     {
         $promptStyle = ComicStyle::getStyleById($styleId);
 
-        return "A $promptStyle. The setting is $story. The main character is $character. The art style features vibrant colors, bold lines, and dynamic shading.";
+        return "A {$promptStyle}. The setting is {$story}. The main character is {$character}. The art style features vibrant colors, bold lines, and dynamic shading.";
     }
 }
 

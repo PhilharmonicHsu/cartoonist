@@ -8,16 +8,17 @@ use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
-readonly class ComicService
+class ComicService
 {
     public function __construct(
-        private ComicRepository $comicRepository
+        private ComicRepository $comicRepository,
+        private Client $client
     ) {}
 
     public function sendResultToAWS(array $result): string
     {
-        $client = new Client();
-        $response = $client->get($result['imageUrl']);
+        $response = $this->client->get($result['imageUrl']);
+
         $imageContent = $response->getBody()->getContents();
 
         $filename = 'comics/' . uniqid() . '.jpg';

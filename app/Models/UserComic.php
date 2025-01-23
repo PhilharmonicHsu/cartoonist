@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Database\Factories\UserComicFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  *
@@ -52,4 +54,9 @@ class UserComic extends Model
         'image_url' => 'string',
         'dialogs' => 'array'
     ];
+
+    protected static function newFactory(): Factory
+    {
+        return UserComicFactory::new();
+    }
 }
