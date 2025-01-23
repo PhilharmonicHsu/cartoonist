@@ -9,7 +9,8 @@ Welcome to the **Cartoonist** – a cutting-edge web application that empowers u
 ### Home Page
 ![Index](assets/index.png)
 
-### Editor 
+### Editor
+![Author Input](assets/author-input.png)
 ![Editor](assets/editor.png)
 
 ### Showroom
