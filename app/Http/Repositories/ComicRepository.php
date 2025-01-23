@@ -3,7 +3,7 @@
 namespace App\Http\Repositories;
 
 use App\Models\UserComic;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class ComicRepository
 {
@@ -25,6 +25,6 @@ class ComicRepository
 
     public function getUserComics(): Collection
     {
-        return UserComic::all();
+        return UserComic::orderByDesc('created_at')->get();
     }
 }

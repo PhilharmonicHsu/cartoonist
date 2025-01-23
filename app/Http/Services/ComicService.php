@@ -5,7 +5,7 @@ namespace App\Http\Services;
 use App\Http\Repositories\ComicRepository;
 use App\Models\UserComic;
 use GuzzleHttp\Client;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class ComicService
