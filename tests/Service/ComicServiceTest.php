@@ -8,7 +8,6 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
 use GuzzleHttp\Client;
-uses(\Tests\TestCase::class);
 
 test('sendResultToAWS uploads image to S3 and returns URL', function () {
     $result = ['imageUrl' => 'https://example.com/image.jpg'];

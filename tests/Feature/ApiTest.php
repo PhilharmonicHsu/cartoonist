@@ -7,10 +7,6 @@ use App\Http\Services\ComicService;
 use App\Http\Services\OpenAIService;
 use App\Models\UserComic;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
-
 test("test generate image is successfully", function() {
     $payload = [
         'storySummary' => 'a post-apocalyptic city with destroyed buildings and scattered debris',

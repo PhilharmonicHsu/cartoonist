@@ -3,9 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\UserComic;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 test('UserComic model has correct attributes', function () {
     $userComic = UserComic::create([
